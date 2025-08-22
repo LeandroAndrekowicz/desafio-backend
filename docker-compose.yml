@@ -1,0 +1,35 @@
+version: '3.8'
+
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: mysql_db
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: meu_banco
+      MYSQL_USER: meuuser
+      MYSQL_PASSWORD: minhasenha
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+
+  api:
+    build: .
+    container_name: nest_api
+    restart: always
+    ports:
+      - "3000:3000"
+    depends_on:
+      - mysql
+    environment:
+      NODE_ENV: production
+      DB_HOST: mysql
+      DB_PORT: 3306
+      DB_USERNAME: meuuser
+      DB_PASSWORD: minhasenha
+      DB_DATABASE: meu_banco
+
+volumes:
+  mysql_data:
