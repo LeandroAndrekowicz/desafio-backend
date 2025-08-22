@@ -3,6 +3,7 @@ import { ProductsRepository } from "./models/repository/products.repository";
 import { TypeOrmModule } from "@nestjs/typeorm";
 import { ProductsEntity } from "./models/entities/products.entity";
 import { SeedProductsUseCase } from "./use-cases/seed-products/seed-products.use-case";
+import { FindProducts } from "./use-cases/find-products/find-products.controller";
 
 @Module({
     imports: [
@@ -12,7 +13,9 @@ import { SeedProductsUseCase } from "./use-cases/seed-products/seed-products.use
         ProductsRepository,
         SeedProductsUseCase
     ],
-    controllers: [],
+    controllers: [
+        FindProducts
+    ],
     exports: []
 })
 export class ProductsModule implements OnModuleInit {
