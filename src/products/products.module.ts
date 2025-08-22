@@ -4,6 +4,7 @@ import { TypeOrmModule } from "@nestjs/typeorm";
 import { ProductsEntity } from "./models/entities/products.entity";
 import { SeedProductsUseCase } from "./use-cases/seed-products/seed-products.use-case";
 import { FindProducts } from "./use-cases/find-products/find-products.controller";
+import { FindProductsUseCase } from "./use-cases/find-products/find-products.use-case";
 
 @Module({
     imports: [
@@ -11,7 +12,8 @@ import { FindProducts } from "./use-cases/find-products/find-products.controller
     ],
     providers: [
         ProductsRepository,
-        SeedProductsUseCase
+        SeedProductsUseCase,
+        FindProductsUseCase
     ],
     controllers: [
         FindProducts
