@@ -35,7 +35,7 @@ export const products = [
   },
   {
     id: uuidv4(),
-    name: " ",
+    name: "Relógio Digital",
     description: "Relógio à prova d'água com várias funções esportivas.",
     price: 149.00,
     url_image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRJ0s-_dAyhE1Qo2Xx-TlG_XMKgnGsae7ye1A&s",

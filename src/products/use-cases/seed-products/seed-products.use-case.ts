@@ -1,6 +1,6 @@
 import { Injectable, Logger } from "@nestjs/common";
-import { products } from "src/products/models/data/products.data";
-import { ProductsRepository } from "src/products/models/repository/products.repository";
+import { products } from "@products/models/data/products.data";
+import { ProductsRepository } from "@products/models/repository/products.repository";
 
 @Injectable()
 export class SeedProductsUseCase {

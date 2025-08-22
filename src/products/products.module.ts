@@ -17,10 +17,12 @@ import { SeedProductsUseCase } from "./use-cases/seed-products/seed-products.use
 })
 export class ProductsModule implements OnModuleInit {
     constructor(
-        private readonly seedProductsUseCase: SeedProductsUseCase
+        private readonly seedProductsUseCase: SeedProductsUseCase,
+        private readonly productsRepository: ProductsRepository
     ) {}
 
     async onModuleInit() {
+        await this.productsRepository.createTable();
         await this.seedProductsUseCase.execute();
     }
 }
