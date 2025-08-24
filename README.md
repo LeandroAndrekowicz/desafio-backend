@@ -1,98 +1,162 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+# ⚙️ Backend - Catálogo de Produtos
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+## 1. Introdução
+API do catálogo de produtos, desenvolvida em **NestJS + TypeScript + TypeORM**.  
+Fornece endpoints para consulta, cadastro e gerenciamento de produtos.
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+---
 
-## Description
+## 2. Tecnologias utilizadas
+- NestJS
+- TypeScript
+- TypeORM
+- MySQL
+- Swagger (documentação de rotas)
+- Class Validator / Class Transformer
+- Docker (opcional)
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+---
 
-## Project setup
+## 3. Estrutura de pastas
 
-```bash
-$ npm install
+src/   
+├─ common/   
+│  ├─ enums/        # Enum de métodos HTTP e constantes    
+│  ├─ utils/        # Helpers e tratamento de erros           
+├─ config/          # Configurações (DB, variáveis de ambiente)    
+├─ products/        # Módulo principal de produtos (controllers, services, entidades)      
+├─ app.module.ts    # Módulo raiz    
+└─ main.ts          # Bootstrap da aplicação
+
+---
+
+## 4. Módulos principais
+
+### Products
+- **Controller:** Define rotas REST (`/products`)  
+- **Service:** Contém a lógica de negócios (busca, filtros, criação)  
+- **Entity:** Mapeamento da tabela `products` no banco via TypeORM  
+
+---
+
+## 5. Fluxo de dados
+
+### Exemplo de fluxo: busca de produtos
+1. Cliente → `GET /products`  
+2. Controller → chama `ProductsService.findAll()`  
+3. Service → consulta o banco via `ProductRepository`  
+4. Response → retorna JSON padronizado com lista de produtos  
+
+---
+
+## 6. Endpoints
+
+### `GET /products`
+- Retorna todos os produtos
+- **Parâmetros opcionais:** `?name=`, `?category=`
+
+**Exemplo de request:**
+```http
+GET /products?name=camisa
 ```
 
-## Compile and run the project
+## 7. 🔒 Tratamento de Erros - Função `handleUnexpectedError`
 
-```bash
-# development
-$ npm run start
+O backend utiliza uma função utilitária chamada `handleUnexpectedError` para **padronizar o tratamento de erros inesperados** dentro dos services.
 
-# watch mode
-$ npm run start:dev
+### 📌 Objetivo
+- Garantir que **erros esperados** (`HttpException`) sejam propagados normalmente para o cliente.
+- Capturar **erros inesperados** (ex.: falhas de conexão, exceções genéricas) e:
+- **Logar** o erro no console com contexto (classe + método).
+- **Retornar** uma resposta genérica com status 500 para o cliente.
+- Evitar expor detalhes técnicos sensíveis para o cliente final.
 
-# production mode
-$ npm run start:prod
+---
+
+### 🧠 Estrutura da função
+
+```ts
+  export function handleUnexpectedError(
+    error: unknown,
+    className: string,
+    method: MethodEnum,
+    genericMessage: string
+  ): never
 ```
 
-## Run tests
+## 8. Como rodar o projeto
 
+### Local
 ```bash
-# unit tests
-$ npm run test
-
-# e2e tests
-$ npm run test:e2e
-
-# test coverage
-$ npm run test:cov
+  npm install
+  npm run start:dev
 ```
 
-## Deployment
-
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
-
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
+### Build
 
 ```bash
-$ npm install -g @nestjs/mau
-$ mau deploy
+  npm run build
+  npm run start:prod
 ```
 
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
+# 8.1 🐳 Rodando o backend com Docker Compose
 
-## Resources
+Este guia mostra como rodar o **backend do Catálogo de Produtos** usando Docker Compose, incluindo build das imagens, containers e configuração de variáveis de ambiente.
 
-Check out a few resources that may come in handy when working with NestJS:
+---
 
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
+### Pré-requisitos
 
-## Support
+- Docker instalado: https://docs.docker.com/get-docker/  
+- Docker Compose instalado: https://docs.docker.com/compose/install/  
+- Copiar o arquivo `.env.example` para `.env` e preencher os valores reais:
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+```bash
+  cp .env.example .env
+```
+ 
+```bash
+  #Construir imagens
+  docker-compose build
 
-## Stay in touch
+  #Subir containers
+  docker-compose up
 
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+  #Para rodar em segundo plano:
+  docker-compose up -d
 
-## License
+  #Ver logs
+  docker-compose logs -f
 
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+  #Parar containers
+  docker-compose down
+
+  #Para remover volumes de dados também:
+  docker-compose down -v
+```
+
+### Estrutura do Docker Compose
+#### - mysql: container do banco de dados MySQL 8.0
+- Porta: 3306
+- Volume persistente: mysql_data
+
+#### - api: container do backend NestJS
+- Porta: definida em PORT no .env
+- Escuta todas interfaces (HOST=0.0.0.0)
+- pende do MySQL
+- Variáveis de ambiente definidas no .env
+
+## Observações
+
+- HOST=0.0.0.0 garante que a API dentro do container seja acessível externamente.
+- PORT=3000 pode ser alterado conforme necessidade, mas lembre-se de ajustar o docker-compose.yml se mudar a porta do host.
+- Certifique-se de que a porta escolhida esteja livre no host.
+- O container da API reinicia automaticamente em caso de falha (restart: always).
+- Qualquer alteração nas variáveis de ambiente exige rebuild do container da API:
+
+```bash
+docker-compose build api
+docker-compose up -d
+```
+
+- Todas as rotas estão documentadas no Swagger em /api/.
