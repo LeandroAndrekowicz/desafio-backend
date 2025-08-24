@@ -17,6 +17,8 @@ services:
 
   api:
     build: .
+    env_file:
+      - .env
     container_name: nest_api
     restart: always
     ports:
