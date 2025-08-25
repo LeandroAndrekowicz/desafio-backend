@@ -121,23 +121,33 @@ Feito para que qualquer pessoa possa clonar o repositório e rodar o projeto com
 
 # Como funciona o cluster Kubernetes nesse setup
 
-## 1. Iniciar os kubernetes
+## 1. Deletar pods antigos
+
+```bash
+    # Deletar pods do banco de dados
+    kubectl delete -f k8s/mysql
+    
+    # Deletar pods do backend
+    kubectl delete -f k8s/backend
+    
+    # Deletar pods do frontend
+    kubectl delete -f k8s/frontend
+```
+
+## 2. Iniciar os kubernetes
 
 ```bash
     # Subir o banco de dados
-    kubectl apply -f mysql-deployment.yaml
+    kubectl apply -f k8s/mysql
     
     # Subir o backend
-    kubectl apply -f backend-deployment.yaml
+    kubectl apply -f k8s/backend
     
     # Subir o frontend
-    kubectl apply -f frontend-deployment.yaml
-    
-    # Aplicar o configMap
-    kubectl apply -f frontend-configmap.yaml
+    kubectl apply -f fk8s/frontend
 ```
 
-## 1. Pods
+## 3. Pods
 
 ### No Kubernetes, cada app roda dentro de um pod, que é a menor unidade de execução:
 
@@ -146,7 +156,7 @@ Feito para que qualquer pessoa possa clonar o repositório e rodar o projeto com
 - Frontend pod: roda o Nginx servindo o app React/Vite.
 - Cada pod tem um IP interno dentro do cluster e é acessível por outros pods via Service.
 
-## 2. Services
+## 4. Services
 
 ### Os pods são efêmeros, então os Services criam um ponto fixo para acessar os pods:
 
@@ -154,7 +164,7 @@ Feito para que qualquer pessoa possa clonar o repositório e rodar o projeto com
 - Backend Service: expõe a porta 3000 internamente. O frontend acessa /api/... via Nginx usando o Service backend:3000.
 - Frontend Service: opcionalmente expõe o pod via NodePort ou LoadBalancer para acessar pelo navegador de fora do cluster.
 
-### 3. ConfigMap do Frontend
+### 5. ConfigMap do Frontend
 
 ### O ConfigMap contém:
 
@@ -162,7 +172,7 @@ Feito para que qualquer pessoa possa clonar o repositório e rodar o projeto com
 - env.js: define a variável VITE_API_URL dinamicamente no navegador para que o frontend saiba onde está a API.
 - O Nginx do frontend usa esse proxy para redirecionar chamadas de /api para o backend sem precisar que o navegador conheça o IP interno do backend.
 
-## 4. Fluxo de requisições
+## 6. Fluxo de requisições
 
 - Usuário acessa no navegador http://<NodeIP>:<NodePort>/.
 - O Nginx serve o app frontend.
@@ -171,7 +181,7 @@ Feito para que qualquer pessoa possa clonar o repositório e rodar o projeto com
 - O backend processa a requisição e busca dados no MySQL (via Service mysql:3306).
 - A resposta volta pelo backend → Nginx → navegador.
 
-## 5. Port-Forward
+## 7. Port-Forward
 
 - Se você não quer usar NodePort/LoadBalancer, pode usar port-forward:
 - Banco de dados: kubectl port-forward mysql-pod 3306:3306
@@ -179,7 +189,7 @@ Feito para que qualquer pessoa possa clonar o repositório e rodar o projeto com
 - Frontend: kubectl port-forward frontend-pod 8080:80
 - Isso permite acessar localmente como se estivesse rodando tudo na sua máquina.
 
-## 6. Vantagens
+## 8. Vantagens
 
 - Cada app isolado em seu pod.
 - Configuração de rede estável via Services.
