@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: frontend
+spec:
+  selector:
+    app: frontend
+  type: NodePort   # Para Minikube/local
+  ports:
+    - port: 80         # porta interna do cluster
+      targetPort: 80   # porta do container
+      nodePort: 30685  # porta externa (fixa para acesso)

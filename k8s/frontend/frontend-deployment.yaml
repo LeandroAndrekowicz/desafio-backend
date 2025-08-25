@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: frontend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: frontend
+  template:
+    metadata:
+      labels:
+        app: frontend
+    spec:
+      containers:
+        - name: frontend
+          image: leandroan/desafio-frontend:latest
+          ports:
+            - containerPort: 80
+          volumeMounts:
+            - name: nginx-config
+              mountPath: /etc/nginx/conf.d/default.conf
+              subPath: default.conf
+            - name: frontend-env
+              mountPath: /usr/share/nginx/html/env.js   # <-- monta o env.js no HTML
+              subPath: env.js
+      volumes:
+        - name: nginx-config
+          configMap:
+            name: frontend-nginx-config
+        - name: frontend-env
+          configMap:
+            name: frontend-nginx-config   # <-- mesmo ConfigMap

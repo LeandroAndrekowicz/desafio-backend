@@ -41,12 +41,16 @@ export default function HomePage() {
             const response = await API.get("api/products", { params });
             setProducts(response.data.products);
             setLoading(false);
-        } catch (err) {
-            const error = isAxiosError(err);
-            if (error && err.response && err.response.status === 404) {
-                setProducts([]);
+        } catch (err: unknown) {
+            if (isAxiosError(err)) {
+                if (err.response?.status === 404) {
+                    setProducts([]);
+                } else {
+                    console.error(err);
+                }
+            } else {
+                console.error(err);
             }
-            console.error(err);
             setLoading(false);
         }
     };
