@@ -13,7 +13,6 @@ Fornece endpoints para consulta, cadastro e gerenciamento de produtos.
 - MySQL
 - Swagger (documentação de rotas)
 - Class Validator / Class Transformer
-- Docker (opcional)
 
 ---
 
@@ -88,75 +87,31 @@ O backend utiliza uma função utilitária chamada `handleUnexpectedError` para 
 
 ### Local
 ```bash
+  # Acessar pasta do backend
+  cd backend
+
+  # Instalar dependencias
   npm install
+
+  # Rodar o projeto em desenvolvimento
   npm run start:dev
 ```
 
 ### Build
 
 ```bash
+  # Acessar pasta do backend
+  cd backend
+
+  # Buildar o projeto
   npm run build
+
+  # Rodar o projeto em produção
   npm run start:prod
 ```
 
-# 8.1 🐳 Rodando o backend com Docker Compose
-
-Este guia mostra como rodar o **backend do Catálogo de Produtos** usando Docker Compose, incluindo build das imagens, containers e configuração de variáveis de ambiente.
-
 ---
 
-### Pré-requisitos
+### Todas as rotas estão documentadas no Swagger em /api/.
 
-- Docker instalado: https://docs.docker.com/get-docker/  
-- Docker Compose instalado: https://docs.docker.com/compose/install/  
-- Copiar o arquivo `.env.example` para `.env` e preencher os valores reais:
-
-```bash
-  cp .env.example .env
-```
- 
-```bash
-  #Construir imagens
-  docker-compose build
-
-  #Subir containers
-  docker-compose up
-
-  #Para rodar em segundo plano:
-  docker-compose up -d
-
-  #Ver logs
-  docker-compose logs -f
-
-  #Parar containers
-  docker-compose down
-
-  #Para remover volumes de dados também:
-  docker-compose down -v
-```
-
-### Estrutura do Docker Compose
-#### - mysql: container do banco de dados MySQL 8.0
-- Porta: 3306
-- Volume persistente: mysql_data
-
-#### - api: container do backend NestJS
-- Porta: definida em PORT no .env
-- Escuta todas interfaces (HOST=0.0.0.0)
-- pende do MySQL
-- Variáveis de ambiente definidas no .env
-
-## Observações
-
-- HOST=0.0.0.0 garante que a API dentro do container seja acessível externamente.
-- PORT=3000 pode ser alterado conforme necessidade, mas lembre-se de ajustar o docker-compose.yml se mudar a porta do host.
-- Certifique-se de que a porta escolhida esteja livre no host.
-- O container da API reinicia automaticamente em caso de falha (restart: always).
-- Qualquer alteração nas variáveis de ambiente exige rebuild do container da API:
-
-```bash
-docker-compose build api
-docker-compose up -d
-```
-
-- Todas as rotas estão documentadas no Swagger em /api/.
+---

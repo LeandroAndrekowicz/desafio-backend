@@ -18,12 +18,12 @@ Permite navegar por produtos, buscar itens, gerenciar favoritos e carrinho.
 
 ## 3. Estrutura de pastas
 
-src/
-├─ assets/ # Imagens e ícones
-├─ components/ # Componentes reutilizáveis (Header, CardProduct, SearchProducts, etc.)
-├─ pages/ # Páginas (Home, ProductDetails, NotFound)
-├─ api/ # Comunicação com a API
-└─ App.tsx # Configuração de rotas e layout principal
+src/  
+├─ assets/ # Imagens e ícones             
+├─ components/ # Componentes reutilizáveis (Header, CardProduct, SearchProducts, etc.)   
+├─ pages/ # Páginas (Home, ProductDetails, NotFound)   
+├─ api/ # Comunicação com a API   
+└─ App.tsx # Configuração de rotas e layout principal  
 
 ---
 
@@ -154,63 +154,18 @@ lucide-react
 
 ## 8. Scripts úteis
 ```bash
+  # Acessar pasta do frontend
+  cd frontend
 
-# Instalar dependências
-npm install
+  # Instalar dependências
+  npm install
 
-# Rodar projeto local
-npm run dev
+  # Rodar projeto local
+  npm run dev
 
-# Build de produção
-npm run build
-```
+  # Build de produção
+  npm run build
 
----
-
-## 🐳 Rodando o frontedn com Docker
-
-Comando de Build do Frontend com Vite e Docker
-
-```bash
-  docker build \
-    --build-arg VITE_API_URL=http://localhost:3000 \
-    -t meu-frontend .
-```
-
-### Explicação dos parâmetros
-- Parâmetro	Função
-- docker build	Comando para construir uma imagem Docker a partir de um Dockerfile.
-- --build-arg VITE_API_URL=http://localhost:3000	Passa a variável VITE_API_URL como argumento para o build. Essa variável será usada no Dockerfile para definir - ENV VITE_API_URL=$VITE_API_URL e incorporada no bundle do Vite.
-- -t meu-frontend	Dá um nome (tag) para a imagem que está sendo construída, facilitando o run depois.
-- .	Contexto do build: indica que o Dockerfile e todo o código estão na pasta atual.
-
-### Como usar depois do build
-
-- Rodar o container do frontend:
-```bash
-  docker run -p 8080:80 meu-frontend
-```
-
-### Isso vai expor a aplicação no host na porta 8080.
-
-
----
-
-## 9. Observações
-- Componentes são reutilizáveis e seguem padrão de props claro.
-
-- Projeto pronto para integração com backend via API.
-
-- O Vite já terá embutido o valor http://localhost:3000 como import.meta.env.VITE_API_URL.
-
-- Alterar a URL da API:
-
-- Como o React com Vite resolve variáveis de ambiente durante o build, para mudar VITE_API_URL é necessário rebuildar a imagem:
-
-```bash
-  docker build \
-    --build-arg VITE_API_URL=http://outra-api:3000 \
-    -t meu-frontend .
 ```
 
 ---
