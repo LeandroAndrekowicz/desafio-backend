@@ -118,3 +118,70 @@ Estrutura recomendada para o .env
 ```
 
 Feito para que qualquer pessoa possa clonar o repositório e rodar o projeto completo sem precisar configurar manualmente cada serviço.
+
+# Como funciona o cluster Kubernetes nesse setup
+
+## 1. Iniciar os kubernetes
+
+```bash
+    # Subir o banco de dados
+    kubectl apply -f mysql-deployment.yaml
+    
+    # Subir o backend
+    kubectl apply -f backend-deployment.yaml
+    
+    # Subir o frontend
+    kubectl apply -f frontend-deployment.yaml
+    
+    # Aplicar o configMap
+    kubectl apply -f frontend-configmap.yaml
+```
+
+## 1. Pods
+
+### No Kubernetes, cada app roda dentro de um pod, que é a menor unidade de execução:
+
+- MySQL pod: roda o banco de dados.
+- Backend pod: roda a API Node.js/NestJS.
+- Frontend pod: roda o Nginx servindo o app React/Vite.
+- Cada pod tem um IP interno dentro do cluster e é acessível por outros pods via Service.
+
+## 2. Services
+
+### Os pods são efêmeros, então os Services criam um ponto fixo para acessar os pods:
+
+- MySQL Service: expõe a porta 3306 internamente no cluster. O backend conecta usando esse Service (mysql:3306).
+- Backend Service: expõe a porta 3000 internamente. O frontend acessa /api/... via Nginx usando o Service backend:3000.
+- Frontend Service: opcionalmente expõe o pod via NodePort ou LoadBalancer para acessar pelo navegador de fora do cluster.
+
+### 3. ConfigMap do Frontend
+
+### O ConfigMap contém:
+
+- default.conf do Nginx: define o proxy /api/ para http://backend:3000.
+- env.js: define a variável VITE_API_URL dinamicamente no navegador para que o frontend saiba onde está a API.
+- O Nginx do frontend usa esse proxy para redirecionar chamadas de /api para o backend sem precisar que o navegador conheça o IP interno do backend.
+
+## 4. Fluxo de requisições
+
+- Usuário acessa no navegador http://<NodeIP>:<NodePort>/.
+- O Nginx serve o app frontend.
+- O app faz requisição fetch("/api/products").
+- O Nginx intercepta /api e faz proxy para http://backend:3000/products.
+- O backend processa a requisição e busca dados no MySQL (via Service mysql:3306).
+- A resposta volta pelo backend → Nginx → navegador.
+
+## 5. Port-Forward
+
+- Se você não quer usar NodePort/LoadBalancer, pode usar port-forward:
+- Banco de dados: kubectl port-forward mysql-pod 3306:3306
+- Backend: kubectl port-forward backend-pod 3000:3000
+- Frontend: kubectl port-forward frontend-pod 8080:80
+- Isso permite acessar localmente como se estivesse rodando tudo na sua máquina.
+
+## 6. Vantagens
+
+- Cada app isolado em seu pod.
+- Configuração de rede estável via Services.
+- Nginx faz proxy sem expor IP interno do backend.
+- Fácil de trocar backend ou frontend sem mudar URLs externas, só atualiza ConfigMap.
