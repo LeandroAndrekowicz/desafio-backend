@@ -95,7 +95,7 @@ export default function HomePage() {
             <div className='container-products'>
                 {loading ? (
                     <Loading />
-                ) : products.length > 0 ? (
+                ) : products?.length > 0 ? (
                     <div className="products">
                         {products.map((product) => (
                             <Link
