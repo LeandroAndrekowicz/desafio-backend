@@ -1,0 +1,27 @@
+.search-bar {
+  display: flex;
+  align-items: center;
+  width: 300px;          /* largura da barra */
+  background-color: #f5f5f5;
+  border-radius: 9999px; /* totalmente arredondada */
+  padding: 5px 10px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.search-bar input {
+  border: none;
+  background: transparent;
+  flex: 1;
+  padding: 8px 10px;
+  border-radius: 9999px;
+  outline: none;
+  font-size: 14px;
+}
+
+.search-bar button.search-btn {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  font-size: 16px;
+  color: #333;
+}
